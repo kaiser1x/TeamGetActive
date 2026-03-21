@@ -1,0 +1,37 @@
+name: habit_mastery_league
+description: "Habit Mastery League - Gamified habit tracking app for building better habits."
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.11.0
+
+dependencies:
+  flutter:
+    sdk: flutter
+  cupertino_icons: ^1.0.8
+
+  # Database
+  sqflite: ^2.3.3        # Local SQLite database
+  path: ^1.9.0           # Path utilities required by sqflite
+
+  # Settings & lightweight storage
+  shared_preferences: ^2.3.3
+
+  # State management
+  provider: ^6.1.2
+
+  # Date formatting
+  intl: ^0.20.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+
+flutter:
+  uses-material-design: true
+
+  assets:
+    - assets/images/
+    - assets/animations/
