@@ -1,8 +1,11 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import '../../../app/theme/app_colors.dart';
 import '../../../app/theme/app_text_styles.dart';
 import '../../../core/constants/app_constants.dart';
 import '../../../core/services/badge_service.dart';
+import '../../../core/services/buddy_service.dart';
 import '../../../core/services/prefs_service.dart';
 import '../../../data/models/habit.dart';
 import '../../../data/models/habit_log.dart';
@@ -24,6 +27,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
   Set<int> _completedToday = {};
   Set<int> _missedYesterday = {};
   Map<int, int> _weeklyProgress = {};
+  String _buddyMessage = '';
+  String _microGoal = '';
   bool _loading = true;
 
   DateTime get _today => DateTime.now();
@@ -71,12 +76,16 @@ class _DashboardScreenState extends State<DashboardScreen> {
         .map((h) => h.id!)
         .toSet();
 
+    final (buddyMsg, microGoal) = await BuddyService.instance.getMessages();
+
     if (!mounted) return;
     setState(() {
       _habits = habits;
       _completedToday = completedToday;
       _missedYesterday = missed;
       _weeklyProgress = weeklyProgress;
+      _buddyMessage = buddyMsg;
+      _microGoal = microGoal;
       _loading = false;
     });
   }
@@ -140,6 +149,14 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 padding: const EdgeInsets.all(16),
                 children: [
                   _ProgressCard(done: done, total: total),
+                  const SizedBox(height: 12),
+                  const _DayTimerCard(),
+                  const SizedBox(height: 12),
+                  _BuddyCard(
+                    message: _buddyMessage,
+                    microGoal: _microGoal,
+                    personality: PrefsService.instance.buddyPersonality,
+                  ),
                   const SizedBox(height: 16),
                   if (_habits.isEmpty)
                     _EmptyState()
@@ -409,6 +426,200 @@ class _HabitTile extends StatelessWidget {
                 : null,
           ),
         ),
+      ),
+    );
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Day timer — shows time left today and explains the midnight reset
+// ---------------------------------------------------------------------------
+
+class _DayTimerCard extends StatefulWidget {
+  const _DayTimerCard();
+
+  @override
+  State<_DayTimerCard> createState() => _DayTimerCardState();
+}
+
+class _DayTimerCardState extends State<_DayTimerCard> {
+  late DateTime _now;
+  late Timer _timer;
+
+  @override
+  void initState() {
+    super.initState();
+    _now = DateTime.now();
+    _timer = Timer.periodic(const Duration(minutes: 1), (_) {
+      setState(() => _now = DateTime.now());
+    });
+  }
+
+  @override
+  void dispose() {
+    _timer.cancel();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final totalSeconds = 24 * 60 * 60;
+    final elapsed = _now.hour * 3600 + _now.minute * 60;
+    final progress = elapsed / totalSeconds;
+    final hoursLeft = 23 - _now.hour;
+    final minsLeft = 59 - _now.minute;
+    final timeLabel = hoursLeft > 0
+        ? '$hoursLeft hr ${minsLeft.toString().padLeft(2, '0')} min left today'
+        : '$minsLeft min left today';
+
+    final Color urgencyColor;
+    if (hoursLeft >= 6) {
+      urgencyColor = Colors.green;
+    } else if (hoursLeft >= 2) {
+      urgencyColor = Colors.orange;
+    } else {
+      urgencyColor = Colors.red;
+    }
+
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      decoration: BoxDecoration(
+        color: Theme.of(context).cardColor,
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(color: AppColors.lightDivider),
+      ),
+      child: Row(
+        children: [
+          Icon(Icons.schedule_rounded, color: urgencyColor, size: 20),
+          const SizedBox(width: 10),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(timeLabel,
+                    style: AppTextStyles.labelLarge
+                        .copyWith(color: AppColors.textDark)),
+                const SizedBox(height: 5),
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(4),
+                  child: LinearProgressIndicator(
+                    value: progress,
+                    minHeight: 5,
+                    backgroundColor: AppColors.lightDivider,
+                    valueColor: AlwaysStoppedAnimation(urgencyColor),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(width: 12),
+          Container(
+            padding:
+                const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+            decoration: BoxDecoration(
+              color: urgencyColor.withValues(alpha: 0.1),
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: Text(
+              'Resets midnight',
+              style: AppTextStyles.caption
+                  .copyWith(color: urgencyColor, fontWeight: FontWeight.w600),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// ---------------------------------------------------------------------------
+// AI Buddy card — daily pep message + micro-goal
+// ---------------------------------------------------------------------------
+
+class _BuddyCard extends StatelessWidget {
+  final String message;
+  final String microGoal;
+  final String personality;
+
+  const _BuddyCard({
+    required this.message,
+    required this.microGoal,
+    required this.personality,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    if (message.isEmpty) return const SizedBox.shrink();
+
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: AppColors.primaryPurple.withValues(alpha: 0.05),
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(
+            color: AppColors.primaryPurple.withValues(alpha: 0.2)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Header row
+          Row(
+            children: [
+              CircleAvatar(
+                radius: 15,
+                backgroundColor: AppColors.primaryPurple,
+                child: const Icon(Icons.smart_toy_rounded,
+                    color: Colors.white, size: 16),
+              ),
+              const SizedBox(width: 10),
+              Expanded(
+                child: Text(personality,
+                    style: AppTextStyles.labelLarge
+                        .copyWith(color: AppColors.primaryPurple)),
+              ),
+              Container(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
+                decoration: BoxDecoration(
+                  color: AppColors.accentGold.withValues(alpha: 0.15),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Text('Daily',
+                    style: AppTextStyles.caption.copyWith(
+                        color: AppColors.accentGold,
+                        fontWeight: FontWeight.bold)),
+              ),
+            ],
+          ),
+          const SizedBox(height: 10),
+          // Pep message
+          Text(message, style: AppTextStyles.bodyMedium),
+          // Micro-goal
+          if (microGoal.isNotEmpty) ...[
+            const SizedBox(height: 10),
+            Container(
+              padding: const EdgeInsets.all(10),
+              decoration: BoxDecoration(
+                color: AppColors.primaryPurple.withValues(alpha: 0.08),
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Icon(Icons.flag_rounded,
+                      color: AppColors.primaryPurple, size: 16),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Text(microGoal,
+                        style: AppTextStyles.bodyMedium.copyWith(
+                            color: AppColors.textDark,
+                            fontWeight: FontWeight.w500)),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ],
       ),
     );
   }

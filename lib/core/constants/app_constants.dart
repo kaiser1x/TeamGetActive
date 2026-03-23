@@ -4,7 +4,7 @@ class AppConstants {
   AppConstants._();
 
   // --- App info ---
-  static const String appName = 'Habit Mastery League';
+  static const String appName = 'Get Active';
   static const String appVersion = '1.0.0';
 
   // --- SharedPreferences keys ---
@@ -16,6 +16,7 @@ class AppConstants {
   static const String keyNotificationsEnabled = 'notifications_enabled';
   static const String keyLastBuddyMessage = 'last_buddy_message';
   static const String keyLastBuddyDate = 'last_buddy_date';
+  static const String keyLastMicroGoal = 'last_micro_goal';
 
   // --- Gamification rules ---
   static const int basePointsPerCompletion = 10;
