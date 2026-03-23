@@ -65,16 +65,18 @@ class PrefsService {
   // The buddy message is regenerated once per day and cached here.
 
   String? get lastBuddyMessage => _p.getString(AppConstants.keyLastBuddyMessage);
-
   String? get lastBuddyDate => _p.getString(AppConstants.keyLastBuddyDate);
+  String? get lastMicroGoal => _p.getString(AppConstants.keyLastMicroGoal);
 
-  Future<void> cacheBuddyMessage(String message) async {
+  /// Caches both the pep message and the micro-goal for today.
+  Future<void> cacheMessages(String message, String microGoal) async {
     final today = DateTime.now().toIso8601String().substring(0, 10);
     await _p.setString(AppConstants.keyLastBuddyMessage, message);
+    await _p.setString(AppConstants.keyLastMicroGoal, microGoal);
     await _p.setString(AppConstants.keyLastBuddyDate, today);
   }
 
-  /// Returns true if the cached buddy message was generated today.
+  /// Returns true if the cached buddy messages were generated today.
   bool get isBuddyMessageFresh {
     final cached = lastBuddyDate;
     if (cached == null) return false;
