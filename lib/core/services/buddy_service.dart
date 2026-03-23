@@ -202,6 +202,86 @@ class BuddyService {
     return 'Micro-goal: create your first habit and check it off today!';
   }
 
+  // ---------------------------------------------------------------------------
+  // Weekly coach insight (data-driven, shown on Insights tab)
+  // ---------------------------------------------------------------------------
+
+  /// Generates a weekly analysis based on real stats — not cached, called fresh
+  /// each time the Insights tab loads.
+  String getWeeklyCoachInsight({
+    required double thisWeekRate,
+    required double lastWeekRate,
+    required int thisWeekXp,
+    required int bestStreak,
+    required String? bestHabit,
+    required List<String> skippedAllWeek,
+  }) {
+    final name = PrefsService.instance.userName;
+    final personality = PrefsService.instance.buddyPersonality;
+    final pct = (thisWeekRate * 100).round();
+    final lastPct = (lastWeekRate * 100).round();
+    final improved = thisWeekRate >= lastWeekRate;
+    final diff = ((thisWeekRate - lastWeekRate).abs() * 100).round();
+
+    final sb = StringBuffer();
+
+    // Week-over-week comparison
+    if (lastWeekRate == 0 && thisWeekRate == 0) {
+      sb.write('No completions logged yet this week, $name. ');
+    } else if (lastWeekRate == 0) {
+      sb.write('$pct% completion in your first tracked week, $name. ');
+    } else if (improved && diff > 0) {
+      sb.write('Up $diff% from last week — $pct% vs $lastPct%, $name. ');
+    } else if (!improved && diff > 0) {
+      sb.write('Down $diff% from last week ($pct% vs $lastPct%), $name. ');
+    } else {
+      sb.write('Consistent at $pct% — matching last week\'s pace, $name. ');
+    }
+
+    // Best streak callout
+    if (bestHabit != null && bestStreak >= 3) {
+      sb.write('"$bestHabit" leads with a $bestStreak-day streak. ');
+    }
+
+    // XP earned
+    if (thisWeekXp > 0) {
+      sb.write('$thisWeekXp XP earned this week. ');
+    }
+
+    // Skipped habits
+    if (skippedAllWeek.isNotEmpty) {
+      if (skippedAllWeek.length == 1) {
+        sb.write('"${skippedAllWeek.first}" hasn\'t been touched this week — ');
+      } else {
+        sb.write('${skippedAllWeek.length} habits untouched this week — ');
+      }
+
+      if (personality == AppConstants.buddyPersonalities[1]) {
+        sb.write('unacceptable. Fix it before Sunday.');
+      } else if (personality == AppConstants.buddyPersonalities[2]) {
+        sb.write('even one small effort before Sunday will break the pattern.');
+      } else if (personality == AppConstants.buddyPersonalities[3]) {
+        sb.write('you\'ve still got time to turn it around! 💪');
+      } else {
+        sb.write('there\'s still time to make progress before the week ends.');
+      }
+    } else if (pct >= 80) {
+      if (personality == AppConstants.buddyPersonalities[1]) {
+        sb.write('Solid week. Now raise the bar next week.');
+      } else if (personality == AppConstants.buddyPersonalities[2]) {
+        sb.write('Your consistency this week is the foundation of lasting change.');
+      } else if (personality == AppConstants.buddyPersonalities[3]) {
+        sb.write('You\'re absolutely crushing it this week 🔥');
+      } else {
+        sb.write('Outstanding week — you\'re building real momentum!');
+      }
+    }
+
+    return sb.toString().trim().isEmpty
+        ? 'Keep working through the week, $name.'
+        : sb.toString().trim();
+  }
+
   String _fallback() => 'Keep going — every day counts!';
   String _fallbackGoal() => 'Complete at least one habit today to build momentum.';
 }
