@@ -64,6 +64,21 @@ class LogRepository {
     );
   }
 
+  /// All logs across ALL habits within a date range — used by Insights.
+  Future<List<HabitLog>> getAllLogsInRange(DateTime from, DateTime to) async {
+    final db = await DatabaseService.instance.database;
+    final rows = await db.query(
+      AppDatabase.tableHabitLogs,
+      where: 'completed_date BETWEEN ? AND ?',
+      whereArgs: [
+        from.toIso8601String().substring(0, 10),
+        to.toIso8601String().substring(0, 10),
+      ],
+      orderBy: 'completed_date ASC',
+    );
+    return rows.map(HabitLog.fromMap).toList();
+  }
+
   /// Count of logs for a habit within a date range inclusive.
   /// Used for weekly-target progress (e.g. gym 4/7 days).
   Future<int> countInRange(int habitId, DateTime from, DateTime to) async {
