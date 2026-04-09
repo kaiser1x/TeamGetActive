@@ -113,7 +113,6 @@ class ProfileScreen extends StatelessWidget {
               actions: [
                 TextButton(
                   onPressed: () {
-                    newPasswordController.dispose();
                     Navigator.of(ctx).pop();
                   },
                   child: const Text('Cancel'),
@@ -125,7 +124,6 @@ class ProfileScreen extends StatelessWidget {
                       await authService.changePassword(
                         newPasswordController.text.trim(),
                       );
-                      newPasswordController.dispose();
                       if (ctx.mounted) Navigator.of(ctx).pop();
                       if (context.mounted) {
                         ScaffoldMessenger.of(context).showSnackBar(
