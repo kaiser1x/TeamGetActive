@@ -29,7 +29,7 @@ class TriviaService {
           .get(
             uri,
             headers: {
-              'Authorization': 'Bearer $_apiKey',
+              'X-Api-Key': _apiKey,
               'Content-Type': 'application/json',
             },
           )
