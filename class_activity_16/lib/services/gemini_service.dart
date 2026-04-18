@@ -105,7 +105,7 @@ Mapping guide:
   ///
   /// [performanceData] must include:
   ///   score (int), total (int), missed (int),
-  ///   missedCategories (Map<String,int>), missedDifficulties (Map<String,int>)
+  ///   missedCategories (Map of String to int), missedDifficulties (Map of String to int)
   static Future<String> generateReviewSummary(
     Map<String, dynamic> performanceData,
   ) async {
