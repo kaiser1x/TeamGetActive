@@ -22,38 +22,44 @@ class AnswerButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return AnimatedContainer(
       duration: const Duration(milliseconds: 200),
-      child: Material(
-        borderRadius: BorderRadius.circular(14),
-        color: _backgroundColor(),
-        child: InkWell(
-          onTap: onTap,
+      child: Semantics(
+        button: true,
+        label: _semanticLabel(),
+        child: Material(
           borderRadius: BorderRadius.circular(14),
-          child: Container(
-            width: double.infinity,
-            padding:
-                const EdgeInsets.symmetric(horizontal: 18, vertical: 16),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(14),
-              border: Border.all(color: _borderColor(), width: 2),
-            ),
-            child: Row(
-              children: [
-                // Icon provides a non-color indicator — important for accessibility
-                _buildIcon(),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: Text(
-                    text,
-                    style: TextStyle(
-                      fontSize: 15,
-                      fontWeight: state == AnswerState.idle
-                          ? FontWeight.normal
-                          : FontWeight.w600,
-                      color: _textColor(),
+          color: _backgroundColor(),
+          child: InkWell(
+            onTap: onTap,
+            borderRadius: BorderRadius.circular(14),
+            child: Container(
+              width: double.infinity,
+              // Minimum 56 px height ensures a reachable touch target
+              constraints: const BoxConstraints(minHeight: 56),
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 18, vertical: 16),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(14),
+                border: Border.all(color: _borderColor(), width: 2),
+              ),
+              child: Row(
+                children: [
+                  // Icon provides a non-color indicator — important for accessibility
+                  _buildIcon(),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Text(
+                      text,
+                      style: TextStyle(
+                        fontSize: 15,
+                        fontWeight: state == AnswerState.idle
+                            ? FontWeight.normal
+                            : FontWeight.w600,
+                        color: _textColor(),
+                      ),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ),
@@ -71,8 +77,21 @@ class AnswerButton extends StatelessWidget {
         return const Icon(Icons.check_circle_outline,
             color: Colors.white, size: 22);
       case AnswerState.idle:
-        return Icon(Icons.circle_outlined,
-            color: Colors.grey[400], size: 22);
+        return Icon(Icons.circle_outlined, color: Colors.grey[400], size: 22);
+    }
+  }
+
+  /// Describes the button state for screen readers — color-independent.
+  String _semanticLabel() {
+    switch (state) {
+      case AnswerState.correct:
+        return 'Correct answer: $text';
+      case AnswerState.wrong:
+        return 'Wrong answer selected: $text';
+      case AnswerState.revealCorrect:
+        return 'Correct answer was: $text';
+      case AnswerState.idle:
+        return 'Answer option: $text';
     }
   }
 
