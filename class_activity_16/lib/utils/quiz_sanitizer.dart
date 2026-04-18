@@ -19,16 +19,16 @@ class QuizSanitizer {
     // Accept the category only if it is in the known valid list
     final category = QuizConstants.categories.contains(config.category)
         ? config.category
-        : 'Code';
+        : 'Programming';
 
-    // Difficulty must be EASY / MEDIUM / HARD
+    // Difficulty must be EASY / MEDIUM / HARD / EXPERT
     final difficulty =
         QuizConstants.difficulties.contains(config.difficulty.toUpperCase())
             ? config.difficulty.toUpperCase()
             : 'EASY';
 
-    // Only multiple-choice is supported
-    const type = 'Multiple_choice';
+    // QuizAPI type value per docs
+    const type = 'MULTIPLE_CHOICE';
 
     // Keep limit in a sensible range
     final limit = config.limit.clamp(5, 20);

@@ -1,26 +1,25 @@
 /// App-wide constants for categories, difficulties, and example prompts.
 class QuizConstants {
-  // Valid QuizAPI category strings
+  // Valid QuizAPI category strings (from QuizAPI docs)
   static const List<String> categories = [
+    'Programming',
     'Linux',
-    'BASH',
     'DevOps',
     'Docker',
     'SQL',
     'CMS',
-    'Code',
     'Cloud',
     'MySQL',
   ];
 
-  // Valid difficulty strings (stored uppercase internally)
+  // Valid difficulty strings — stored and sent uppercase per QuizAPI docs
   static const List<String> difficulties = [
     'EASY',
     'MEDIUM',
     'HARD',
+    'EXPERT',
   ];
 
-  // Sample prompts shown under the NL search field to guide the user
   static const List<String> examplePrompts = [
     '"easy programming questions"',
     '"medium Linux quiz"',
