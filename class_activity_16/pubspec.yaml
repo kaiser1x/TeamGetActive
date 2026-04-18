@@ -1,0 +1,32 @@
+name: class_activity_16
+description: "Trivia Quiz App with QuizAPI + Gemini AI for MAD Class Activity 16"
+publish_to: 'none'
+
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.11.0
+
+dependencies:
+  flutter:
+    sdk: flutter
+  cupertino_icons: ^1.0.8
+  # REST calls to QuizAPI and Gemini
+  http: ^1.1.0
+  # Renders SVG assets (celebration, loading, correct/incorrect icons)
+  flutter_svg: ^2.0.10+1
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+
+flutter:
+  uses-material-design: true
+  assets:
+    # celebration.svg: motivation on results screen — rewards the learner
+    # loading.svg: empty/loading state — avoids blank screen confusion
+    - assets/images/
+    # correct.svg: green check — pairs color feedback with an icon for accessibility
+    # incorrect.svg: red X — pairs color feedback with an icon for accessibility
+    - assets/icons/

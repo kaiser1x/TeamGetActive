@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
+  <!-- Background circle: calm blue — signals thinking/loading state -->
+  <circle cx="100" cy="100" r="90" fill="#E3F2FD"/>
+  <!-- Outer ring -->
+  <circle cx="100" cy="100" r="70" fill="none" stroke="#BBDEFB" stroke-width="6"/>
+  <!-- Magnifying glass circle -->
+  <circle cx="88" cy="88" r="36" fill="white" stroke="#2196F3" stroke-width="7"/>
+  <!-- Magnifying glass handle -->
+  <line x1="115" y1="115" x2="148" y2="148" stroke="#2196F3" stroke-width="11" stroke-linecap="round"/>
+  <!-- Question mark dot -->
+  <circle cx="88" cy="112" r="5" fill="#2196F3"/>
+  <!-- Question mark curve -->
+  <path d="M78 78 Q78 66 88 66 Q98 66 98 78 Q98 90 88 95 L88 102" fill="none" stroke="#2196F3" stroke-width="6" stroke-linecap="round"/>
+</svg>

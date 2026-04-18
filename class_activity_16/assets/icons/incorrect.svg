@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">
+  <!-- Red circle background — pairs with red button color for accessibility -->
+  <circle cx="24" cy="24" r="22" fill="#F44336"/>
+  <!-- X mark — clear visual cue that does not rely on color alone -->
+  <line x1="15" y1="15" x2="33" y2="33" stroke="white" stroke-width="4.5" stroke-linecap="round"/>
+  <line x1="33" y1="15" x2="15" y2="33" stroke="white" stroke-width="4.5" stroke-linecap="round"/>
+</svg>

@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">
+  <!-- Green circle background — pairs with green button color for accessibility -->
+  <circle cx="24" cy="24" r="22" fill="#4CAF50"/>
+  <!-- Checkmark — clear visual cue that does not rely on color alone -->
+  <polyline points="11,24 20,33 37,15" fill="none" stroke="white" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

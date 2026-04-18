@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
+  <!-- Background circle: warm glow to signal success -->
+  <circle cx="100" cy="100" r="95" fill="#FFFDE7"/>
+  <!-- Trophy body -->
+  <path d="M68 48 L132 48 L122 128 L78 128 Z" fill="#FFD700" stroke="#FFA000" stroke-width="2"/>
+  <!-- Trophy base stem -->
+  <rect x="83" y="128" width="34" height="16" rx="3" fill="#FFD700"/>
+  <!-- Trophy stand -->
+  <rect x="70" y="144" width="60" height="12" rx="6" fill="#FFA000"/>
+  <!-- Left handle -->
+  <path d="M68 62 Q46 62 46 88 Q46 114 68 114" fill="none" stroke="#FFD700" stroke-width="9" stroke-linecap="round"/>
+  <!-- Right handle -->
+  <path d="M132 62 Q154 62 154 88 Q154 114 132 114" fill="none" stroke="#FFD700" stroke-width="9" stroke-linecap="round"/>
+  <!-- Star top-left -->
+  <polygon points="38,28 41,39 52,39 43,46 46,57 38,50 30,57 33,46 24,39 35,39" fill="#FF6B35"/>
+  <!-- Star top-right -->
+  <polygon points="162,28 165,39 176,39 167,46 170,57 162,50 154,57 157,46 148,39 159,39" fill="#4ECDC4"/>
+  <!-- Star bottom-left -->
+  <polygon points="28,130 30,138 38,138 32,143 34,151 28,146 22,151 24,143 18,138 26,138" fill="#45B7D1"/>
+  <!-- Star bottom-right -->
+  <polygon points="172,130 174,138 182,138 176,143 178,151 172,146 166,151 168,143 162,138 170,138" fill="#96CEB4"/>
+  <!-- Shine dots -->
+  <circle cx="100" cy="24" r="7" fill="#FFEAA7"/>
+  <circle cx="180" cy="90" r="5" fill="#FD79A8"/>
+  <circle cx="20" cy="90" r="5" fill="#74B9FF"/>
+</svg>
