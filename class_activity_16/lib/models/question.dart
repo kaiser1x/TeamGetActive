@@ -35,11 +35,11 @@ class Question {
     try {
       final id = json['id']?.toString() ?? '';
 
-      // Field name is "text" per QuizAPI docs
-      final questionText =
-          _decodeHtml((json['text'] as String? ?? '').trim());
+      final questionText = _decodeHtml(
+        ((json['text'] ?? json['question']) as String? ?? '').trim(),
+      );
 
-      final category = json['category'] as String? ?? 'General';
+      final category = _parseCategory(json['category']);
       final difficulty = json['difficulty'] as String? ?? 'EASY';
 
       // answers is an array: [{ "text": "...", "isCorrect": true }, ...]
@@ -61,6 +61,27 @@ class Question {
           // Correct flag is "isCorrect" (camelCase) per QuizAPI docs
           final isCorrect = item['isCorrect'];
           if (isCorrect == true) {
+            correctAnswerText = text;
+          }
+        }
+      } else if (rawAnswers is Map) {
+        final correctAnswerKey = json['correct_answer'] as String?;
+        final correctAnswers = json['correct_answers'];
+
+        for (final entry in rawAnswers.entries) {
+          final value = entry.value;
+          if (value is! String || value.trim().isEmpty) continue;
+
+          final text = _decodeHtml(value.trim());
+          answers.add(text);
+
+          final isCorrectByKey = correctAnswerKey == entry.key;
+          final isCorrectByMap =
+              correctAnswers is Map &&
+              (correctAnswers['${entry.key}_correct'] == 'true' ||
+                  correctAnswers['${entry.key}_correct'] == true);
+
+          if (isCorrectByKey || isCorrectByMap) {
             correctAnswerText = text;
           }
         }
@@ -97,5 +118,20 @@ class Question {
         .replaceAll('&#39;', "'")
         .replaceAll('&nbsp;', ' ')
         .replaceAll('&apos;', "'");
+  }
+
+  static String _parseCategory(dynamic rawCategory) {
+    if (rawCategory is String && rawCategory.trim().isNotEmpty) {
+      return rawCategory.trim();
+    }
+
+    if (rawCategory is Map) {
+      final name = rawCategory['name'];
+      if (name is String && name.trim().isNotEmpty) {
+        return name.trim();
+      }
+    }
+
+    return 'General';
   }
 }

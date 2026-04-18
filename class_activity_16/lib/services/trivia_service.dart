@@ -73,19 +73,15 @@ class TriviaService {
     }
 
     // Parse response — shape: { "success": true, "data": [...], "meta": {...} }
-    final Map<String, dynamic> body;
+    final dynamic decodedBody;
     try {
-      body = json.decode(response.body) as Map<String, dynamic>;
+      decodedBody = json.decode(response.body);
     } catch (_) {
       throw Exception('Unexpected response from QuizAPI. Please try again.');
     }
 
-    if (body['success'] != true) {
-      throw Exception('QuizAPI returned an error. Please try again.');
-    }
-
-    final rawList = body['data'];
-    if (rawList is! List) {
+    final rawList = _extractQuestionList(decodedBody);
+    if (rawList == null) {
       throw Exception('Unexpected response shape from QuizAPI.');
     }
 
@@ -114,5 +110,24 @@ class TriviaService {
     }
 
     return questions;
+  }
+
+  static List<dynamic>? _extractQuestionList(dynamic decodedBody) {
+    if (decodedBody is List) {
+      return decodedBody;
+    }
+
+    if (decodedBody is Map<String, dynamic>) {
+      if (decodedBody['success'] == false) {
+        return null;
+      }
+
+      final data = decodedBody['data'];
+      if (data is List) {
+        return data;
+      }
+    }
+
+    return null;
   }
 }

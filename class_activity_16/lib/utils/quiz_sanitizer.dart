@@ -19,7 +19,7 @@ class QuizSanitizer {
     // Accept the category only if it is in the known valid list
     final category = QuizConstants.categories.contains(config.category)
         ? config.category
-        : 'Programming';
+        : 'Code';
 
     // Difficulty must be EASY / MEDIUM / HARD / EXPERT
     final difficulty =

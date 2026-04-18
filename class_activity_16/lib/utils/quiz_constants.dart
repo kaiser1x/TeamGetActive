@@ -2,8 +2,9 @@
 class QuizConstants {
   // Valid QuizAPI category strings (from QuizAPI docs)
   static const List<String> categories = [
-    'Programming',
+    'Code',
     'Linux',
+    'BASH',
     'DevOps',
     'Docker',
     'SQL',

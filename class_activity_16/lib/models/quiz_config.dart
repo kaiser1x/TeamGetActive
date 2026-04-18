@@ -1,7 +1,7 @@
 /// Holds the settings used to fetch questions from QuizAPI.
 /// Created either by manual defaults or by Gemini's parseQuizIntent response.
 class QuizConfig {
-  final String category;   // e.g. "Programming", "Linux", "SQL"
+  final String category;   // e.g. "Code", "Linux", "SQL"
   final String difficulty; // "EASY" | "MEDIUM" | "HARD" | "EXPERT" (uppercase)
   final String type;       // "MULTIPLE_CHOICE"
   final int limit;         // 5–20
@@ -16,7 +16,7 @@ class QuizConfig {
   /// Sensible defaults used as fallback when Gemini is unavailable.
   factory QuizConfig.defaults() {
     return const QuizConfig(
-      category: 'Programming',
+      category: 'Code',
       difficulty: 'EASY',
       type: 'MULTIPLE_CHOICE',
       limit: 10,
@@ -26,7 +26,7 @@ class QuizConfig {
   /// Parse from the JSON that Gemini returns for Natural Language Question Search.
   factory QuizConfig.fromJson(Map<String, dynamic> json) {
     return QuizConfig(
-      category: json['category'] as String? ?? 'Programming',
+      category: json['category'] as String? ?? 'Code',
       difficulty: (json['difficulty'] as String? ?? 'EASY').toUpperCase(),
       type: 'MULTIPLE_CHOICE',
       limit: (json['limit'] as num?)?.toInt() ?? 10,
