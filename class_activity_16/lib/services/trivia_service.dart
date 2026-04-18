@@ -29,8 +29,8 @@ class TriviaService {
           .get(
             uri,
             headers: {
-              'X-Api-Key': _apiKey,
-              'Accept': 'application/json',
+              'Authorization': 'Bearer $_apiKey',
+              'Content-Type': 'application/json',
             },
           )
           .timeout(const Duration(seconds: 15));
